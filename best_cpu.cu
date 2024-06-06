@@ -1,16 +1,3 @@
-/* ------------
- * This code is provided solely for the personal and private use of
- * students taking the CSC367H5 course at the University of Toronto.
- * Copying for purposes other than this use is expressly prohibited.
- * All forms of distribution of this code, whether as given or with
- * any changes, are expressly prohibited.
- *
- * Authors: Bogdan Simion, Felipe de Azevedo Piovezan
- *
- * All of the files in this directory and all subdirectories are:
- * Copyright (c) 2022 Bogdan Simion
- * -------------
- */
 
 #include "kernels.h"
 
@@ -60,10 +47,8 @@ void normalize_pixel(int32_t *target, int32_t pixel_idx, int32_t smallest,
 }
 /*************** COMMON WORK ***********************/
 /* Processes a single pixel and returns the value of processed pixel
- * TODO: you don't have to implement/use this function, but this is a hint
- * on how to reuse your code.
  * */
-int32_t apply2d(const filter *f, const int32_t *original, int32_t *target,
+int32_t apply_transformation(const filter *f, const int32_t *original, int32_t *target,
                 int32_t width, int32_t height, int row, int column) {
   int32_t result = 0;
   int center = f->dimension / 2;
@@ -133,7 +118,7 @@ void *sharding_work(void *arg) {
     for (int y = start_row; y < end_row; y++) {
         for (int x = 0; x < cw->width; x++) {
             int idx = y * cw->width + x;
-            int32_t new_val = apply2d(cw->f, cw->original_image, cw->output_image, cw->width, cw->height, y, x);
+            int32_t new_val = apply_transformation(cw->f, cw->original_image, cw->output_image, cw->width, cw->height, y, x);
             cw->output_image[idx] = new_val;
             if (new_val < local_min) local_min = new_val;
             if (new_val > local_max) local_max = new_val;
